@@ -1,0 +1,44 @@
+pause_device:
+  name: Pause device
+  description: >
+    Blocks internet access for one or more Firewalla devices for the given duration,
+    then automatically resumes access. Creates a managed block rule on first use
+    and reuses it on subsequent calls.
+  target:
+    entity:
+      integration: firewalla
+      domain: switch
+  fields:
+    duration:
+      name: Duration
+      description: How long to pause, in seconds.
+      example: 1800
+      default: 1800
+      selector:
+        number:
+          min: 1
+          max: 86400
+          unit_of_measurement: seconds
+          mode: box
+
+pause_group:
+  name: Pause group
+  description: >
+    Blocks internet access for every device in a Firewalla device group for the
+    given duration, then automatically resumes access.
+  target:
+    entity:
+      integration: firewalla
+      domain: switch
+  fields:
+    duration:
+      name: Duration
+      description: How long to pause, in seconds.
+      example: 1800
+      default: 1800
+      selector:
+        number:
+          min: 1
+          max: 86400
+          unit_of_measurement: seconds
+          mode: box
