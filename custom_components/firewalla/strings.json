@@ -1,0 +1,104 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Connect to Firewalla MSP",
+                "description": "Enter your MSP domain (e.g. `mydomain.firewalla.net`) and a personal access token from your MSP Account Settings.",
+                "data": {
+                    "msp_domain": "MSP domain",
+                    "token": "Personal access token"
+                }
+            },
+            "pick_box": {
+                "title": "Select a box",
+                "description": "Choose which Firewalla box to add. Add more entries to manage additional boxes.",
+                "data": {
+                    "box_gid": "Box"
+                }
+            },
+            "reauth_confirm": {
+                "title": "Firewalla MSP token expired",
+                "description": "Paste a new personal access token to restore access.",
+                "data": {
+                    "token": "Personal access token"
+                }
+            }
+        },
+        "error": {
+            "invalid_auth": "The token was rejected. Check that it hasn't been deleted in MSP Account Settings.",
+            "cannot_connect": "Could not reach the MSP domain.",
+            "no_boxes": "No boxes found in this MSP account.",
+            "unknown": "Unexpected error. Check the Home Assistant log."
+        },
+        "abort": {
+            "already_configured": "This Firewalla box is already configured.",
+            "all_boxes_configured": "Every box in this MSP account is already configured.",
+            "box_not_found": "That box could not be found. Try again."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Firewalla options",
+                "data": {
+                    "scan_interval": "Polling interval (seconds)",
+                    "hierarchical_devices": "Nest devices under the box in the device registry"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "box_online": {
+                "name": "Online"
+            }
+        },
+        "sensor": {
+            "device_count": {
+                "name": "Devices"
+            },
+            "rule_count": {
+                "name": "Rules"
+            },
+            "alarm_count": {
+                "name": "Alarms"
+            },
+            "public_ip": {
+                "name": "Public IP"
+            }
+        },
+        "switch": {
+            "rule": {
+                "name": "Rule"
+            },
+            "device_pause": {
+                "name": "Internet access"
+            },
+            "group_pause": {
+                "name": "Group pause"
+            }
+        }
+    },
+    "services": {
+        "pause_device": {
+            "name": "Pause device",
+            "description": "Block internet access for one or more devices, then auto-resume after the duration.",
+            "fields": {
+                "duration": {
+                    "name": "Duration",
+                    "description": "Pause duration in seconds."
+                }
+            }
+        },
+        "pause_group": {
+            "name": "Pause group",
+            "description": "Block internet access for every device in a group, then auto-resume after the duration.",
+            "fields": {
+                "duration": {
+                    "name": "Duration",
+                    "description": "Pause duration in seconds."
+                }
+            }
+        }
+    }
+}
