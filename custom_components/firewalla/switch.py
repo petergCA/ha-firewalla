@@ -21,7 +21,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from firewalla_msp_api import FirewallaAPIError
+from .firewalla_msp_api import FirewallaAPIError
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback

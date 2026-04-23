@@ -5,7 +5,7 @@ each platform file stays focused on its own entity types.
 """
 from __future__ import annotations
 
-from firewalla_msp_api import Box, Device
+from .firewalla_msp_api import Box, Device
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 

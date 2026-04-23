@@ -4,7 +4,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from firewalla_msp_api import Box
+from .firewalla_msp_api import Box
 from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,

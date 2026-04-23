@@ -6,7 +6,7 @@ from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol
-from firewalla_msp_api import (
+from .firewalla_msp_api import (
     Box,
     FirewallaAPIError,
     FirewallaAuthError,

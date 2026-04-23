@@ -11,7 +11,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import timedelta
 
-from firewalla_msp_api import (
+from .firewalla_msp_api import (
     Box,
     Device,
     FirewallaAPIError,
