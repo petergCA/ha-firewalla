@@ -1,6 +1,6 @@
 """Bundled Firewalla MSP API client."""
 from .client import FirewallaMSPClient
-from .exceptions import FirewallaAPIError, FirewallaAuthError, FirewallaConnectionError
+from .exceptions import FirewallaAPIError, FirewallaAuthError, FirewallaConnectionError, FirewallaRateLimitError
 from .models import Box, Device, Group, Rule, Scope, Target
 
 __all__ = [
@@ -8,6 +8,7 @@ __all__ = [
     "FirewallaAPIError",
     "FirewallaAuthError",
     "FirewallaConnectionError",
+    "FirewallaRateLimitError",
     "Box",
     "Device",
     "Group",

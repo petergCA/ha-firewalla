@@ -25,22 +25,45 @@ def box_device_info(box: Box) -> DeviceInfo:
     )
 
 
+def group_device_info(box_gid: str, group_id: str, group_name: str) -> DeviceInfo:
+    """DeviceInfo for a device group, parented under the box."""
+    return DeviceInfo(
+        identifiers={(DOMAIN, f"{box_gid}:group:{group_id}")},
+        name=group_name,
+        model="Device Group",
+        via_device=(DOMAIN, box_gid),
+    )
+
+
+def rules_device_info(box: Box) -> DeviceInfo:
+    """DeviceInfo for the virtual 'Rules' device, parented under the box."""
+    return DeviceInfo(
+        identifiers={(DOMAIN, f"{box.gid}:rules")},
+        name="Rules",
+        model="Firewall Rules",
+        via_device=(DOMAIN, box.gid),
+    )
+
+
 def device_device_info(coordinator: FirewallaCoordinator, device: Device) -> DeviceInfo:
     """DeviceInfo for a network device tracked behind a box.
 
-    Hierarchical mode links each device to its box via ``via_device`` so the HA
-    device page shows them nested. Flat mode skips that link.
+    Devices with a group are nested under that group's HA device. Ungrouped
+    devices fall back to the hierarchical option (box or flat).
     """
     box_gid = coordinator.box_gid
-    hierarchical = coordinator.config_entry.options.get(CONF_HIERARCHICAL, DEFAULT_HIERARCHICAL)
     info = DeviceInfo(
         identifiers={(DOMAIN, f"{box_gid}:device:{device.id}")},
         manufacturer=device.mac_vendor or "Unknown",
         name=device.name or device.id,
         model="Network device",
     )
-    if hierarchical:
-        info["via_device"] = (DOMAIN, box_gid)
+    if device.group:
+        info["via_device"] = (DOMAIN, f"{box_gid}:group:{device.group.id}")
+    else:
+        hierarchical = coordinator.config_entry.options.get(CONF_HIERARCHICAL, DEFAULT_HIERARCHICAL)
+        if hierarchical:
+            info["via_device"] = (DOMAIN, box_gid)
     return info
 
 

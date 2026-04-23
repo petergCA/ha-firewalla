@@ -16,7 +16,7 @@ CONF_SCAN_INTERVAL = "scan_interval"
 CONF_HIERARCHICAL = "hierarchical_devices"
 
 # ---- Defaults -------------------------------------------------------------
-DEFAULT_SCAN_INTERVAL = 60  # seconds
+DEFAULT_SCAN_INTERVAL = 300  # seconds
 MIN_SCAN_INTERVAL = 15
 MAX_SCAN_INTERVAL = 900
 DEFAULT_HIERARCHICAL = True

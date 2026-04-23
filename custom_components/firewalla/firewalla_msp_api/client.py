@@ -1,12 +1,13 @@
 """Async HTTP client for the Firewalla MSP API v2."""
 from __future__ import annotations
 
+import contextlib
 import logging
 from typing import Any
 
 import aiohttp
 
-from .exceptions import FirewallaAPIError, FirewallaAuthError, FirewallaConnectionError
+from .exceptions import FirewallaAPIError, FirewallaAuthError, FirewallaConnectionError, FirewallaRateLimitError
 from .models import Box, Device, Rule
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,6 +50,11 @@ class FirewallaMSPClient:
                     raise FirewallaAuthError(
                         f"Authentication failed (HTTP {resp.status})"
                     )
+                if resp.status == 429:
+                    retry_after = None
+                    with contextlib.suppress(Exception):
+                        retry_after = float(resp.headers.get("Retry-After", 0)) or None
+                    raise FirewallaRateLimitError(retry_after)
                 if resp.status >= 400:
                     text = await resp.text()
                     raise FirewallaAPIError(f"HTTP {resp.status}: {text[:200]}")
@@ -60,7 +66,7 @@ class FirewallaMSPClient:
             raise FirewallaConnectionError(f"Cannot connect to {url}") from err
         except aiohttp.ServerTimeoutError as err:
             raise FirewallaConnectionError(f"Timeout connecting to {url}") from err
-        except (FirewallaAPIError, FirewallaAuthError, FirewallaConnectionError):
+        except (FirewallaAPIError, FirewallaAuthError, FirewallaConnectionError, FirewallaRateLimitError):
             raise
         except Exception as err:
             raise FirewallaAPIError(f"Unexpected error calling {url}: {err}") from err

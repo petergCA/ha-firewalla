@@ -17,6 +17,7 @@ from .firewalla_msp_api import (
     FirewallaAPIError,
     FirewallaAuthError,
     FirewallaMSPClient,
+    FirewallaRateLimitError,
     Rule,
 )
 from homeassistant.config_entries import ConfigEntry
@@ -77,17 +78,16 @@ class FirewallaCoordinator(DataUpdateCoordinator[FirewallaData]):
 
     async def _async_update_data(self) -> FirewallaData:
         try:
-            # Fetch everything concurrently; the MSP endpoints are independent.
-            boxes_task = asyncio.create_task(self.client.list_boxes())
-            devices_task = asyncio.create_task(self.client.list_devices(box_gid=self.box_gid))
-            rules_task = asyncio.create_task(self.client.list_rules(box_gid=self.box_gid))
-
-            boxes, devices, rules = await asyncio.gather(
-                boxes_task, devices_task, rules_task
-            )
+            # Sequential requests avoid bursting 3 simultaneous calls and
+            # triggering the MSP API's rate limiter (HTTP 429).
+            boxes = await self.client.list_boxes()
+            devices = await self.client.list_devices(box_gid=self.box_gid)
+            rules = await self.client.list_rules(box_gid=self.box_gid)
         except FirewallaAuthError as err:
             # Triggers reauth flow rather than endlessly retrying.
             raise ConfigEntryAuthFailed(str(err)) from err
+        except FirewallaRateLimitError as err:
+            raise UpdateFailed(f"Firewalla MSP API rate limited: {err}") from err
         except FirewallaAPIError as err:
             raise UpdateFailed(f"Firewalla MSP API error: {err}") from err
 

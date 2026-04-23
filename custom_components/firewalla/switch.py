@@ -30,7 +30,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import managed_rule_note
 from .coordinator import FirewallaCoordinator
-from .entity import FirewallaEntity, box_device_info, device_device_info
+from .entity import FirewallaEntity, box_device_info, device_device_info, group_device_info, rules_device_info
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class FirewallaRuleSwitch(FirewallaEntity, SwitchEntity):
         rule = coordinator.data.rules[rule_id]
         self._attr_unique_id = f"{coordinator.box_gid}:rule:{rule_id}"
         self._attr_name = rule.notes or f"Rule {rule_id[:8]}"
-        self._attr_device_info = box_device_info(coordinator.data.box)
+        self._attr_device_info = rules_device_info(coordinator.data.box)
         self._optimistic_state: bool | None = None
 
     @property
@@ -303,8 +303,8 @@ class FirewallaGroupPauseSwitch(_PauseSwitchBase):
         self._target_name = group_name
         self._scope_value = group_id
         self._attr_unique_id = f"{coordinator.box_gid}:group-pause:{group_id}"
-        self._attr_name = f"Pause group {group_name}"
-        self._attr_device_info = box_device_info(coordinator.data.box)
+        self._attr_name = f"Pause {group_name}"
+        self._attr_device_info = group_device_info(coordinator.box_gid, group_id, group_name)
 
     @property
     def _managed_rule(self):
