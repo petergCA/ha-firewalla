@@ -1,0 +1,3 @@
+
+# Claude Code per-user settings (may hold tokens); never commit
+.claude/settings.local.json
